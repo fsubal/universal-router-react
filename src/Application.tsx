@@ -25,7 +25,14 @@ export default function Application<C>({
     }
 
     if (next.type === NonSpaRoute) {
-      throw new Error("tried to navigate to NonSpaRoute");
+      if (process.env.NODE_ENV === "development") {
+        console.warn(
+          `Tried to navigate to <NonSpaRoute>. Maybe be you should use normal <a> element for ${pathname} instead.`
+        );
+      }
+
+      location.href = pathname;
+      return;
     }
 
     setCurrentChildren(next);

@@ -7,12 +7,17 @@ export const NavLinkContext = React.createContext<NavigateFunction>(() => {
   throw new Error("<NavLink> tried to navigate without NavLinkContext");
 });
 
-const NavLink: React.FC<React.HTMLProps<HTMLAnchorElement>> = ({
+type Props = React.HTMLProps<HTMLAnchorElement> & {
+  onNavigate?: (pathname: string) => void;
+};
+
+const NavLink: React.FC<Props> = ({
   href,
   children,
   rel,
   target,
-  ...rest
+  onNavigate,
+  ...props
 }) => {
   const navigate = useContext(NavLinkContext);
 
@@ -25,6 +30,8 @@ const NavLink: React.FC<React.HTMLProps<HTMLAnchorElement>> = ({
      */
     const href = anchor.getAttribute("href")!;
     const url = new URLParse(href, {});
+
+    onNavigate?.(url.pathname);
 
     const isRelative = url.host === "";
     if (!isRelative) {
@@ -40,7 +47,7 @@ const NavLink: React.FC<React.HTMLProps<HTMLAnchorElement>> = ({
     }
 
     e.preventDefault();
-    navigate(href);
+    navigate(url.pathname);
   }
 
   return (
@@ -48,7 +55,7 @@ const NavLink: React.FC<React.HTMLProps<HTMLAnchorElement>> = ({
       href={href}
       onClick={onClick}
       rel={rel ?? target === "_blank" ? "noopener noreferrer" : undefined}
-      {...rest}
+      {...props}
     >
       {children}
     </a>

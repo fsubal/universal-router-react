@@ -4,6 +4,9 @@
   "main": "index.js",
   "author": "f_subal <fsubal1102@gmail.com>",
   "license": "MIT",
+  "dependencies": {
+    "url-parse": "^1.4.7"
+  },
   "devDependencies": {
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.6",
@@ -20,6 +23,7 @@
     "universal-router": "^9.0.1"
   },
   "peerDependencies": {
-    "react": "*"
+    "react": "*",
+    "universal-router": "*"
   }
 }

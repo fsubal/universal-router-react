@@ -3,15 +3,17 @@ import type UniversalRouter from "universal-router";
 import NonSpaRoute from "./NonSpaRoute";
 import { NavLinkContext } from "./NavLink";
 
+const ApplicationContext = React.createContext(null as any);
+
 interface Props<C> {
-  context: React.Context<C>;
+  context: C;
   router: UniversalRouter;
   children: React.ReactNode;
 }
 
 export default function Application<C>({
   router,
-  // context,
+  context,
   children,
 }: Props<C>) {
   const [currentChildren, setCurrentChildren] = useState(children);
@@ -31,12 +33,10 @@ export default function Application<C>({
   };
 
   return (
-    <NavLinkContext.Provider value={navigate}>
-      <>{currentChildren}</>
-    </NavLinkContext.Provider>
+    <ApplicationContext.Provider value={context}>
+      <NavLinkContext.Provider value={navigate}>
+        <>{currentChildren}</>
+      </NavLinkContext.Provider>
+    </ApplicationContext.Provider>
   );
-}
-
-export function start() {
-  // TODO
 }

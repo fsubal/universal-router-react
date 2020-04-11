@@ -5,8 +5,13 @@
   "author": "f_subal <fsubal1102@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.27.0",
+    "@typescript-eslint/parser": "^2.27.0",
     "bili": "^4.9.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-react": "^7.19.0",
     "prettier": "^2.0.4",
+    "rollup-plugin-typescript2": "^0.27.0",
     "typescript": "^3.8.3",
     "universal-router": "^9.0.1"
   },

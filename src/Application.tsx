@@ -36,3 +36,7 @@ export default function Application<C>({
     </NavLinkContext.Provider>
   );
 }
+
+export function start() {
+  // TODO
+}

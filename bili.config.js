@@ -1,5 +1,5 @@
 export default {
-  input: "src/index.ts",
+  input: "src/index.tsx",
   plugins: {
     typescript2: {
       objectHashIgnoreUnknownHack: false,

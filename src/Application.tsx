@@ -1,9 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import type UniversalRouter from "universal-router";
+import generateUrls from "universal-router/generateUrls";
 import NonSpaRoute from "./NonSpaRoute";
 import { NavLinkContext } from "./NavLink";
 
 const ApplicationContext = React.createContext(null as any);
+
+export interface RouteContextValue {
+  urlFor: ReturnType<typeof generateUrls>;
+}
+
+export const RouteContext = React.createContext<RouteContextValue>(null as any);
 
 interface Props<C> {
   context: C;
@@ -17,6 +24,8 @@ export default function Application<C>({
   children,
 }: Props<C>) {
   const [currentChildren, setCurrentChildren] = useState(children);
+
+  const urlFor = useMemo(() => generateUrls(router), [router]);
 
   const navigate = async (pathname: string) => {
     const next = await router.resolve(pathname);
@@ -41,9 +50,11 @@ export default function Application<C>({
 
   return (
     <ApplicationContext.Provider value={context}>
-      <NavLinkContext.Provider value={navigate}>
-        <>{currentChildren}</>
-      </NavLinkContext.Provider>
+      <RouteContext.Provider value={{ urlFor }}>
+        <NavLinkContext.Provider value={navigate}>
+          <>{currentChildren}</>
+        </NavLinkContext.Provider>
+      </RouteContext.Provider>
     </ApplicationContext.Provider>
   );
 }

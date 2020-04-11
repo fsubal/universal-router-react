@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import UniversalRouter from "universal-router";
+import type UniversalRouter from "universal-router";
 import NonSpaRoute from "./NonSpaRoute";
 import ApplicationContext from "./ApplicationContext";
 

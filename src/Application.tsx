@@ -1,33 +1,29 @@
 import React, { useState } from "react";
 import type UniversalRouter from "universal-router";
 import NonSpaRoute from "./NonSpaRoute";
-import ApplicationContext from "./ApplicationContext";
-
-export const NavLinkContext = React.createContext(null as any);
+import { NavLinkContext } from "./NavLink";
 
 interface Props<C> {
-  context: C;
+  context: React.Context<C>;
   router: UniversalRouter;
   children: React.ReactNode;
 }
 
 export default function Application<C>({
   router,
-  context,
+  // context,
   children,
 }: Props<C>) {
   const [currentChildren, setCurrentChildren] = useState(children);
 
-  const navigate = async (path: string) => {
-    const url = new URL(path);
-    const next = await router.resolve(url.pathname);
+  const navigate = async (pathname: string) => {
+    const next = await router.resolve(pathname);
     if (!React.isValidElement(next)) {
       throw new Error("not a valid route");
     }
 
     if (next.type === NonSpaRoute) {
-      location.href = url.href;
-      return;
+      throw new Error("tried to navigate to NonSpaRoute");
     }
 
     setCurrentChildren(next);
@@ -35,10 +31,8 @@ export default function Application<C>({
   };
 
   return (
-    <ApplicationContext.Provider value={context}>
-      <NavLinkContext.Provider value={navigate}>
-        <>{currentChildren}</>
-      </NavLinkContext.Provider>
-    </ApplicationContext.Provider>
+    <NavLinkContext.Provider value={navigate}>
+      <>{currentChildren}</>
+    </NavLinkContext.Provider>
   );
 }

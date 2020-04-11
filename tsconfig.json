@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
     "target": "es5",
+    "jsx": "react",
     "declaration": true,
-    "module": "commonjs",
+    "module": "esnext",
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true

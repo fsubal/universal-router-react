@@ -12,17 +12,17 @@ export interface RouteContextValue {
 
 export const RouteContext = React.createContext<RouteContextValue>(null as any);
 
-interface Props {
+interface Props<C extends Record<string, any>> {
   initialRoute: Route;
-  router: UniversalRouter<RouteResult>;
+  router: UniversalRouter<RouteResult<C>>;
   children: React.ReactNode;
 }
 
-export default function Application<C>({
+export default function Application<C extends Record<string, any>>({
   router,
   initialRoute,
   children,
-}: Props) {
+}: Props<C>) {
   const [currentRoute, setCurrentRoute] = useState<Route>(initialRoute);
   const [currentChildren, setCurrentChildren] = useState(children);
 
@@ -36,7 +36,7 @@ export default function Application<C>({
 
     const { component, route } = next;
     if (!React.isValidElement(component)) {
-      throw new Error("not a valid route");
+      throw new Error("Returned value of route should be a React Component");
     }
 
     if (component.type === NonSpaRoute) {
@@ -57,7 +57,7 @@ export default function Application<C>({
 
   return (
     <RouteContext.Provider value={{ route: currentRoute, urlFor, navigate }}>
-      <>{currentChildren}</>
+      {currentChildren}
     </RouteContext.Provider>
   );
 }

@@ -18,6 +18,10 @@ const NavLink: React.FC<Props> = ({
   const { navigate, route } = useRoute();
 
   function onClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    if (e.defaultPrevented) {
+      return;
+    }
+
     const anchor = e.currentTarget;
 
     /**
@@ -35,9 +39,14 @@ const NavLink: React.FC<Props> = ({
       return;
     }
 
-    const newWindowOrTab =
-      e.ctrlKey || e.shiftKey || anchor.target === "_blank";
-    if (newWindowOrTab) {
+    const isLeftClick = e.button === 0;
+    if (isLeftClick) {
+      return;
+    }
+
+    const isModified = e.metaKey || e.altKey || e.ctrlKey || e.shiftKey;
+    const newWindowOrTab = anchor.target === "_blank";
+    if (isModified || newWindowOrTab) {
       // Do nothing when new window or tab (Then it should work as normal <a> element)
       return;
     }

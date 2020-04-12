@@ -3,6 +3,7 @@ import UniversalRouter, { Route } from "universal-router";
 import generateUrls from "universal-router/generateUrls";
 import NonSpaRoute from "./NonSpaRoute";
 import { RouteResult } from "./resolveRoutes";
+import { useRestoreScroll } from "./useRestoreScroll";
 
 export interface RouteContextValue<C> {
   route: Route;
@@ -26,6 +27,8 @@ export default function Application<C extends Record<string, any>>({
   initialRoute,
   children,
 }: Props<C>) {
+  useRestoreScroll(location.pathname);
+
   const [shared, setShared] = useState<C | null>(null);
   const [currentRoute, setCurrentRoute] = useState<Route>(initialRoute);
   const [currentChildren, setCurrentChildren] = useState(children);

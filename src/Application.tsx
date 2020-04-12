@@ -54,7 +54,9 @@ export default function Application<C extends Record<string, any>>({
       return;
     }
 
-    setShared(shared);
+    if (!shared) {
+      setShared(shared);
+    }
     setCurrentChildren(next);
     setCurrentRoute(route);
     // history.pushState()

@@ -10,9 +10,8 @@ export const restoreScroll = (pathname: string) => {
 
   let [scrollX, scrollY] = scroll;
 
-  const targetHash = location.hash.substr(1);
-  if (targetHash) {
-    const target = document.getElementById(targetHash);
+  if (location.hash) {
+    const target = document.querySelector(location.hash);
     if (target) {
       scrollY = window.pageYOffset + target.getBoundingClientRect().top;
     }

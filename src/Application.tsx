@@ -4,8 +4,6 @@ import generateUrls from "universal-router/generateUrls";
 import NonSpaRoute from "./NonSpaRoute";
 import { RouteResult } from "./resolveRoutes";
 
-const ApplicationContext = React.createContext(null as any);
-
 export interface RouteContextValue {
   route: Route;
   urlFor: ReturnType<typeof generateUrls>;
@@ -14,8 +12,7 @@ export interface RouteContextValue {
 
 export const RouteContext = React.createContext<RouteContextValue>(null as any);
 
-interface Props<C> {
-  context: C;
+interface Props {
   initialRoute: Route;
   router: UniversalRouter<RouteResult>;
   children: React.ReactNode;
@@ -24,9 +21,8 @@ interface Props<C> {
 export default function Application<C>({
   router,
   initialRoute,
-  context,
   children,
-}: Props<C>) {
+}: Props) {
   const [currentRoute, setCurrentRoute] = useState<Route>(initialRoute);
   const [currentChildren, setCurrentChildren] = useState(children);
 
@@ -60,10 +56,8 @@ export default function Application<C>({
   };
 
   return (
-    <ApplicationContext.Provider value={context}>
-      <RouteContext.Provider value={{ route: currentRoute, urlFor, navigate }}>
-        <>{currentChildren}</>
-      </RouteContext.Provider>
-    </ApplicationContext.Provider>
+    <RouteContext.Provider value={{ route: currentRoute, urlFor, navigate }}>
+      <>{currentChildren}</>
+    </RouteContext.Provider>
   );
 }

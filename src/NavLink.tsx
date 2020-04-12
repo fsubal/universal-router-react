@@ -1,6 +1,6 @@
 import React from "react";
 import URLParse from "url-parse";
-import { useRoute } from "./hooks";
+import { useRoute } from "./Application";
 import { Route } from "universal-router";
 
 type Props = React.HTMLProps<HTMLAnchorElement> & {

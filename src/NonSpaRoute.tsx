@@ -1,6 +1,6 @@
 import { RouteParams, Route } from "universal-router";
 import { useEffect } from "react";
-import { useRoute } from "./hooks";
+import { useRoute } from "./Application";
 
 export type SetupFunction<E> = (
   params: RouteParams,

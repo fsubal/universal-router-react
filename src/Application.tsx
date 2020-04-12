@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useContext } from "react";
 import UniversalRouter, { Route } from "universal-router";
 import generateUrls from "universal-router/generateUrls";
 import NonSpaRoute from "./NonSpaRoute";
@@ -67,4 +67,8 @@ export default function Application<C extends Record<string, any>>({
       {currentChildren}
     </RouteContext.Provider>
   );
+}
+
+export function useRoute<C extends Record<string, any>>() {
+  return useContext(RouteContext) as RouteContextValue<C>;
 }

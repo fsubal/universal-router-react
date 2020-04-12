@@ -5,12 +5,12 @@ import { useRoute } from "./hooks";
 export type SetupFunction<E> = (
   params: RouteParams,
   route: Route,
-  extraArgs: E
+  extraArgs?: E
 ) => void;
 
 interface Props<E> {
   params: RouteParams;
-  extraArgs: E;
+  extraArgs?: E;
   setup: SetupFunction<E>;
 }
 
@@ -19,7 +19,7 @@ export function NonSpaRoute<E>({ params, setup, extraArgs }: Props<E>) {
 
   useEffect(() => {
     setup(params, route, extraArgs);
-  }, [extraArgs, params, setup]);
+  }, [setup, params, route, extraArgs]);
 
   return null;
 }

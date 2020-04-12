@@ -24,7 +24,6 @@ export function resolveRoute<C extends Record<string, any>>(
     params,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     next,
-
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     pathname,
 

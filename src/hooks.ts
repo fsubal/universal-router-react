@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { RouteContext } from "./Application";
+import { RouteContext, RouteContextValue } from "./Application";
 
-export function useRoute() {
-  return useContext(RouteContext);
+export function useRoute<C extends Record<string, any>>() {
+  return useContext(RouteContext) as RouteContextValue<C>;
 }

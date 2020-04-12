@@ -4,13 +4,16 @@ import generateUrls from "universal-router/generateUrls";
 import NonSpaRoute from "./NonSpaRoute";
 import { RouteResult } from "./resolveRoutes";
 
-export interface RouteContextValue {
+export interface RouteContextValue<C> {
   route: Route;
+  shared: C;
   urlFor: ReturnType<typeof generateUrls>;
   navigate(pathname: string): void;
 }
 
-export const RouteContext = React.createContext<RouteContextValue>(null as any);
+export const RouteContext = React.createContext<RouteContextValue<any>>(
+  null as any
+);
 
 interface Props<C extends Record<string, any>> {
   initialRoute: Route;
@@ -23,6 +26,7 @@ export default function Application<C extends Record<string, any>>({
   initialRoute,
   children,
 }: Props<C>) {
+  const [shared, setShared] = useState<C | null>(null);
   const [currentRoute, setCurrentRoute] = useState<Route>(initialRoute);
   const [currentChildren, setCurrentChildren] = useState(children);
 
@@ -34,7 +38,7 @@ export default function Application<C extends Record<string, any>>({
       throw new Error("Not found");
     }
 
-    const { component, route } = next;
+    const { component, shared, route } = next;
     if (!React.isValidElement(component)) {
       throw new Error("Returned value of route should be a React Component");
     }
@@ -50,13 +54,16 @@ export default function Application<C extends Record<string, any>>({
       return;
     }
 
+    setShared(shared);
     setCurrentChildren(next);
     setCurrentRoute(route);
     // history.pushState()
   };
 
   return (
-    <RouteContext.Provider value={{ route: currentRoute, urlFor, navigate }}>
+    <RouteContext.Provider
+      value={{ route: currentRoute, shared, urlFor, navigate }}
+    >
       {currentChildren}
     </RouteContext.Provider>
   );

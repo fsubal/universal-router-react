@@ -1,39 +1,49 @@
 import React, { useState, useMemo } from "react";
-import type UniversalRouter from "universal-router";
+import UniversalRouter, { Route } from "universal-router";
 import generateUrls from "universal-router/generateUrls";
 import NonSpaRoute from "./NonSpaRoute";
-import { NavLinkContext } from "./NavLink";
+import { RouteResult } from "./resolveRoutes";
 
 const ApplicationContext = React.createContext(null as any);
 
 export interface RouteContextValue {
+  route: Route;
   urlFor: ReturnType<typeof generateUrls>;
+  navigate(pathname: string): void;
 }
 
 export const RouteContext = React.createContext<RouteContextValue>(null as any);
 
 interface Props<C> {
   context: C;
-  router: UniversalRouter;
+  initialRoute: Route;
+  router: UniversalRouter<RouteResult>;
   children: React.ReactNode;
 }
 
 export default function Application<C>({
   router,
+  initialRoute,
   context,
   children,
 }: Props<C>) {
+  const [currentRoute, setCurrentRoute] = useState<Route>(initialRoute);
   const [currentChildren, setCurrentChildren] = useState(children);
 
   const urlFor = useMemo(() => generateUrls(router), [router]);
 
   const navigate = async (pathname: string) => {
     const next = await router.resolve(pathname);
-    if (!React.isValidElement(next)) {
+    if (!next) {
+      throw new Error("Not found");
+    }
+
+    const { component, route } = next;
+    if (!React.isValidElement(component)) {
       throw new Error("not a valid route");
     }
 
-    if (next.type === NonSpaRoute) {
+    if (component.type === NonSpaRoute) {
       if (process.env.NODE_ENV === "development") {
         console.warn(
           `Tried to navigate to <NonSpaRoute>. Maybe be you should use normal <a> element for ${pathname} instead.`
@@ -45,15 +55,14 @@ export default function Application<C>({
     }
 
     setCurrentChildren(next);
+    setCurrentRoute(route);
     // history.pushState()
   };
 
   return (
     <ApplicationContext.Provider value={context}>
-      <RouteContext.Provider value={{ urlFor }}>
-        <NavLinkContext.Provider value={navigate}>
-          <>{currentChildren}</>
-        </NavLinkContext.Provider>
+      <RouteContext.Provider value={{ route: currentRoute, urlFor, navigate }}>
+        <>{currentChildren}</>
       </RouteContext.Provider>
     </ApplicationContext.Provider>
   );

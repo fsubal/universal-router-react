@@ -1,14 +1,10 @@
-import React, { useContext } from "react";
+import React from "react";
 import URLParse from "url-parse";
-
-export type NavigateFunction = (pathname: string) => void;
-
-export const NavLinkContext = React.createContext<NavigateFunction>(() => {
-  throw new Error("<NavLink> tried to navigate without NavLinkContext");
-});
+import { useRoute } from "./hooks";
+import { Route } from "universal-router";
 
 type Props = React.HTMLProps<HTMLAnchorElement> & {
-  onNavigate?: (pathname: string) => void;
+  onBeforeNavigate?: (nextPathname: string, currentRoute: Route) => void;
 };
 
 const NavLink: React.FC<Props> = ({
@@ -16,10 +12,10 @@ const NavLink: React.FC<Props> = ({
   children,
   rel,
   target,
-  onNavigate,
+  onBeforeNavigate,
   ...props
 }) => {
-  const navigate = useContext(NavLinkContext);
+  const { navigate, route } = useRoute();
 
   function onClick(e: React.MouseEvent<HTMLAnchorElement>) {
     const anchor = e.currentTarget;
@@ -31,7 +27,7 @@ const NavLink: React.FC<Props> = ({
     const href = anchor.getAttribute("href")!;
     const url = new URLParse(href, {});
 
-    onNavigate?.(url.pathname);
+    onBeforeNavigate?.(url.pathname, route);
 
     const isRelative = url.host === "";
     if (!isRelative) {

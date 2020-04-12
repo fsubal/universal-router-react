@@ -18,12 +18,6 @@ const NavLink: React.FC<Props> = ({
   const { navigate, route } = useRoute();
 
   function onClick(e: React.MouseEvent<HTMLAnchorElement>) {
-    props.onClick?.(e);
-
-    if (e.defaultPrevented) {
-      return;
-    }
-
     const anchor = e.currentTarget;
 
     /**
@@ -34,6 +28,11 @@ const NavLink: React.FC<Props> = ({
     const url = new URLParse(href, {});
 
     onBeforeNavigate?.(url.pathname, route);
+    props.onClick?.(e);
+
+    if (e.defaultPrevented) {
+      return;
+    }
 
     const isRelative = url.host === "";
     if (!isRelative) {

@@ -5,7 +5,7 @@
   "author": "f_subal <fsubal1102@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "example:start": "parcel example/index.html"
+    "example:start": "parcel example/index.html --out-dir example-dist"
   },
   "dependencies": {
     "url-parse": "^1.4.7"

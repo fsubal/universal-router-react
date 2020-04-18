@@ -1,9 +1,10 @@
 import { useEffect } from "react";
+import { createBrowserHistory } from "history";
 
 const scrollHistory: Record<string, [number, number]> = {};
 
-export const restoreScroll = (pathname: string) => {
-  const scroll = scrollHistory[pathname];
+export const restoreScroll = (key: string) => {
+  const scroll = scrollHistory[key];
   if (!scroll) {
     return;
   }
@@ -20,7 +21,9 @@ export const restoreScroll = (pathname: string) => {
   window.scrollTo(scrollX, scrollY);
 };
 
-export const useRestoreScroll = (pathname: string) => {
+export const useRestoreScroll = (
+  browserHistory?: ReturnType<typeof createBrowserHistory>
+) => {
   // Switch off the native scroll restoration behavior and handle it manually
   // https://developers.google.com/web/updates/2015/09/history-api-scroll-restoration
   useEffect(() => {
@@ -30,6 +33,14 @@ export const useRestoreScroll = (pathname: string) => {
   }, []);
 
   useEffect(() => {
-    restoreScroll(pathname);
-  }, [pathname]);
+    const unlisten = browserHistory?.listen(({ key }, action) => {
+      if (action === "PUSH") {
+        delete scrollHistory[key!];
+      }
+
+      restoreScroll(key!);
+    });
+
+    return () => unlisten?.();
+  }, [browserHistory]);
 };

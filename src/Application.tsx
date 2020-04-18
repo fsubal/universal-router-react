@@ -4,6 +4,7 @@ import generateUrls from "universal-router/generateUrls";
 import NonSpaRoute from "./NonSpaRoute";
 import { RouteResult } from "./resolveRoutes";
 import { useRestoreScroll } from "./useRestoreScroll";
+import { createBrowserHistory } from "history";
 
 export interface RouteContextValue<C> {
   route: Route;
@@ -17,17 +18,19 @@ export const RouteContext = React.createContext<RouteContextValue<any>>(
 );
 
 interface Props<C extends Record<string, any>> {
+  browserHistory?: ReturnType<typeof createBrowserHistory>;
   initialRoute: Route;
   router: UniversalRouter<RouteResult<C>>;
   children: React.ReactNode;
 }
 
 export default function Application<C extends Record<string, any>>({
+  browserHistory,
   router,
   initialRoute,
   children,
 }: Props<C>) {
-  useRestoreScroll(location.pathname);
+  useRestoreScroll(browserHistory);
 
   const [shared, setShared] = useState<C | null>(null);
   const [currentRoute, setCurrentRoute] = useState<Route>(initialRoute);
@@ -44,7 +47,9 @@ export default function Application<C extends Record<string, any>>({
 
       const { component, shared, route } = next;
       if (!React.isValidElement(component)) {
-        throw new Error("Returned value of route should be a React Component");
+        throw new Error(
+          "Returned value of action() should be a React Component"
+        );
       }
 
       if (component.type === NonSpaRoute) {
@@ -63,9 +68,10 @@ export default function Application<C extends Record<string, any>>({
       }
       setCurrentChildren(next);
       setCurrentRoute(route);
-      // history.pushState()
+
+      browserHistory?.push(pathname);
     },
-    [router]
+    [router, browserHistory]
   );
 
   return (

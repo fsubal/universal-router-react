@@ -8,7 +8,7 @@
     "example:start": "parcel example/index.html --out-dir example-dist"
   },
   "dependencies": {
-    "url-parse": "^1.4.7"
+    "url-parse": "^1.5.6"
   },
   "devDependencies": {
     "@types/history": "^4.7.5",
